@@ -1,6 +1,8 @@
 package flash
 
-import "machine"
+import (
+	"machine"
+)
 
 type transport interface {
 	configure(config *DeviceConfig)

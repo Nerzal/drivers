@@ -13,6 +13,7 @@ import (
 
 	"machine"
 
+	"tinygo.org/x/drivers"
 	"tinygo.org/x/drivers/net"
 )
 
@@ -258,7 +259,7 @@ type command struct {
 }
 
 type Device struct {
-	SPI   machine.SPI
+	SPI   drivers.SPI
 	CS    machine.Pin
 	ACK   machine.Pin
 	GPIO0 machine.Pin
@@ -266,6 +267,17 @@ type Device struct {
 
 	buf   [64]byte
 	ssids [10]string
+}
+
+// New returns a new Wifinina driver.
+func New(bus drivers.SPI, csPin, ackPin, gpio0Pin, resetPin machine.Pin) *Device {
+	return &Device{
+		SPI:   bus,
+		CS:    csPin,
+		ACK:   ackPin,
+		GPIO0: gpio0Pin,
+		RESET: resetPin,
+	}
 }
 
 func (d *Device) Configure() {
@@ -300,13 +312,15 @@ func (d *Device) StartClient(addr uint32, port uint16, sock uint8, mode uint8) e
 		d.spiChipDeselect()
 		return err
 	}
-	l := d.sendCmd(CmdStartClientTCP, 4)
-	l += d.sendParam32(addr, false)
-	l += d.sendParam16(port, false)
-	l += d.sendParam8(sock, false)
-	l += d.sendParam8(mode, true)
-	d.addPadding(l)
+
+	d.sendCmd(CmdStartClientTCP, 4)
+	d.sendParam32(addr, false)
+	d.sendParam16(port, false)
+	d.sendParam8(sock, false)
+	d.sendParam8(mode, true)
+
 	d.spiChipDeselect()
+
 	_, err := d.waitRspCmd1(CmdStartClientTCP)
 	return err
 }
@@ -567,7 +581,24 @@ func (d *Device) SetPassphrase(ssid string, passphrase string) error {
 }
 
 func (d *Device) SetKey(ssid string, index uint8, key string) error {
-	return ErrNotImplemented
+	defer d.spiChipDeselect()
+	if err := d.waitForChipSelect(); err != nil {
+		return err
+	}
+
+	d.sendCmd(CmdSetKey, 3)
+	d.sendParamStr(ssid, false)
+	d.sendParam8(index, false)
+	d.sendParamStr(key, true)
+
+	d.padTo4(8 + len(ssid) + len(key))
+
+	_, err := d.waitRspCmd1(CmdSetKey)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (d *Device) SetNetworkForAP(ssid string) error {
@@ -585,11 +616,41 @@ func (d *Device) SetIP(which uint8, ip uint32, gw uint32, subnet uint32) error {
 }
 
 func (d *Device) SetDNS(which uint8, dns1 uint32, dns2 uint32) error {
-	return ErrNotImplemented
+	defer d.spiChipDeselect()
+	if err := d.waitForChipSelect(); err != nil {
+		return err
+	}
+
+	d.sendCmd(CmdSetDNSConfig, 3)
+	d.sendParam8(which, false)
+	d.sendParam32(dns1, false)
+	d.sendParam32(dns2, true)
+
+	_, err := d.waitRspCmd1(CmdSetDNSConfig)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (d *Device) SetHostname(hostname string) error {
-	return ErrNotImplemented
+	defer d.spiChipDeselect()
+	if err := d.waitForChipSelect(); err != nil {
+		return err
+	}
+
+	d.sendCmd(CmdSetHostname, 3)
+	d.sendParamStr(hostname, true)
+
+	d.padTo4(5 + len(hostname))
+
+	_, err := d.waitRspCmd1(CmdSetHostname)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (d *Device) SetPowerMode(mode uint8) error {
@@ -756,7 +817,7 @@ func (d *Device) sendCmdStr(cmd uint8, p1 string) (err error) {
 		return err
 	}
 	l := d.sendCmd(cmd, 1)
-	l += d.sendParamStr(p1, false)
+	l += d.sendParamStr(p1, true)
 	d.addPadding(l)
 	return nil
 }
@@ -766,10 +827,10 @@ func (d *Device) sendCmdStr2(cmd uint8, p1 string, p2 string) (err error) {
 	if err := d.waitForChipSelect(); err != nil {
 		return err
 	}
-	l := d.sendCmd(cmd, 2)
-	l += d.sendParamStr(p1, false)
-	l += d.sendParamStr(p2, true)
-	d.addPadding(l)
+	d.sendCmd(cmd, 2)
+	d.sendParamStr(p1, false)
+	d.sendParamStr(p2, true)
+	d.padTo4(6 + len(p1) + len(p2))
 	return nil
 }
 
@@ -1078,5 +1139,16 @@ func (d *Device) addPadding(l int) {
 			println("padding\r")
 		}
 		d.SPI.Transfer(dummyData)
+	}
+}
+
+func (d *Device) padTo4(l int) {
+	if _debug {
+		println("addPadding", l, "\r")
+	}
+
+	for l%4 != 0 {
+		d.SPI.Transfer(dummyData)
+		l++
 	}
 }
