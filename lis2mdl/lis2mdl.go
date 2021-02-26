@@ -3,7 +3,7 @@
 //
 // Datasheet: https://www.st.com/resource/en/datasheet/lis2mdl.pdf
 //
-package lis2mdl // import "tinygo.org/x/drivers/lis2mdl"
+package lis2mdl // import "github.com/Nerzal/drivers/lis2mdl"
 
 import (
 	"math"

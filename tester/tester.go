@@ -2,7 +2,7 @@
 //
 // TODO: info on how to use this.
 //
-package tester // import "tinygo.org/x/drivers/tester"
+package tester // import "github.com/Nerzal/drivers/tester"
 
 // Failer is used by the I2CDevice type to abort when it's used in
 // unexpected ways, such as reading an out-of-range register.

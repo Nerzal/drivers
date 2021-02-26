@@ -2,7 +2,7 @@
 //
 // Datasheet: http://thingm.com/fileadmin/thingm/downloads/BlinkM_datasheet.pdf
 //
-package blinkm // import "tinygo.org/x/drivers/blinkm"
+package blinkm // import "github.com/Nerzal/drivers/blinkm"
 
 import "tinygo.org/x/drivers"
 

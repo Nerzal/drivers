@@ -57,6 +57,12 @@ func DialTCP(network string, laddr, raddr *TCPAddr) (*TCPSerialConn, error) {
 	// disconnect any old socket?
 	//ActiveDevice.DisconnectSocket()
 
+	println("trying to connect to tcp socket")
+
+	if ActiveDevice == nil {
+		println("ActiveDevice is nil")
+	}
+
 	// connect new socket
 	err := ActiveDevice.ConnectTCPSocket(addr, sendport)
 	if err != nil {
@@ -72,10 +78,13 @@ func DialTCP(network string, laddr, raddr *TCPAddr) (*TCPSerialConn, error) {
 func Dial(network, address string) (Conn, error) {
 	switch network {
 	case "tcp":
+		println("trying to resolve address")
 		raddr, err := ResolveTCPAddr(network, address)
 		if err != nil {
 			return nil, err
 		}
+
+		println("dial tcp")
 
 		c, e := DialTCP(network, &TCPAddr{}, raddr)
 		return c.opConn(), e

@@ -308,6 +308,7 @@ func (d *Device) StartClient(addr uint32, port uint16, sock uint8, mode uint8) e
 		println("[StartClient] called StartClient()\r")
 		fmt.Printf("[StartClient] addr: % 02X, port: %d, sock: %d\r\n", addr, port, sock)
 	}
+
 	if err := d.waitForChipSelect(); err != nil {
 		d.spiChipDeselect()
 		return err

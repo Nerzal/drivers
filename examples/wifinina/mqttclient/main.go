@@ -17,16 +17,16 @@ import (
 	"math/rand"
 	"time"
 
-	"tinygo.org/x/drivers/net/mqtt"
-	"tinygo.org/x/drivers/wifinina"
+	"github.com/Nerzal/drivers/net/mqtt"
+	"github.com/Nerzal/drivers/wifinina"
 )
 
 // access point info
-const ssid = ""
-const pass = ""
+const ssid = "NoobyGames"
+const pass = "IchHasseLangeWlanZugangsDaten1312!"
 
 // IP address of the MQTT broker to use. Replace with your own info.
-const server = "tcp://test.mosquitto.org:1883"
+const server = "tcp://192.168.2.102:1883"
 
 //const server = "ssl://test.mosquitto.org:8883"
 

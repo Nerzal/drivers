@@ -4,7 +4,7 @@
 //
 // Schematic:
 //
-package microbitmatrix // import "tinygo.org/x/drivers/microbitmatrix"
+package microbitmatrix // import "github.com/Nerzal/drivers/microbitmatrix"
 
 import (
 	"machine"

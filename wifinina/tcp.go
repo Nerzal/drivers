@@ -47,6 +47,7 @@ func (drv *Driver) ConnectSSLSocket(addr, portStr string) error {
 
 func (drv *Driver) connectSocket(addr, portStr string, mode uint8) error {
 
+	println("connecting to socket")
 	drv.proto, drv.ip, drv.port = mode, 0, 0
 
 	// convert port to uint16
@@ -75,6 +76,8 @@ func (drv *Driver) connectSocket(addr, portStr string, mode uint8) error {
 	if drv.sock, err = drv.dev.GetSocket(); err != nil {
 		return err
 	}
+
+	println("trying to start client")
 
 	// attempt to start the client
 	if err := drv.dev.StartClient(ip, port, drv.sock, mode); err != nil {
