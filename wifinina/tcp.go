@@ -84,25 +84,27 @@ func (drv *Driver) connectSocket(addr, portStr string, mode uint8) error {
 
 	// attempt to start the client
 	drv.proto = mode
-	if mode != ProtoModeUDP {
-		if err := drv.dev.StartClient(drv.ip, drv.port, drv.sock, drv.proto); err != nil {
-			return err
-		}
-		// FIXME: this 4 second timeout is simply mimicking the Arduino driver
-		for now := time.Now(); time.Since(now) < 4*time.Second; {
-			connected, err := drv.IsConnected()
-			if err != nil {
-				return err
-			}
-			if connected {
-				return nil
-			}
-			wait(1 * time.Millisecond)
-		}
-		return ErrConnectionTimeout
+	if mode == ProtoModeUDP {
+		return nil
 	}
 
-	return nil
+	if err := drv.dev.StartClient(drv.ip, drv.port, drv.sock, drv.proto); err != nil {
+		return err
+	}
+	// FIXME: this 4 second timeout is simply mimicking the Arduino driver
+	for now := time.Now(); time.Since(now) < 4*time.Second; {
+		connected, err := drv.IsConnected()
+		if err != nil {
+			return err
+		}
+		if connected {
+			return nil
+		}
+		wait(1 * time.Millisecond)
+	}
+
+	return ErrConnectionTimeout
+
 }
 
 func convertPort(portStr string) (uint16, error) {

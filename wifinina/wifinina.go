@@ -118,24 +118,24 @@ const (
 	CmdSetDigitalWrite = 0x51
 	CmdSetAnalogWrite  = 0x52
 
-	ErrTimeoutSlaveReady  Error = 0x01
-	ErrTimeoutSlaveSelect Error = 0x02
-	ErrCheckStartCmd      Error = 0x03
-	ErrWaitRsp            Error = 0x04
-	ErrUnexpectedLength   Error = 0xE0
-	ErrNoParamsReturned   Error = 0xE1
-	ErrIncorrectSentinel  Error = 0xE2
-	ErrIncorrectReply     Error = 0xE3
-	ErrCmdErrorReceived   Error = 0xEF
-	ErrNotImplemented     Error = 0xF0
-	ErrUnknownHost        Error = 0xF1
-	ErrSocketAlreadySet   Error = 0xF2
-	ErrConnectionTimeout  Error = 0xF3
-	ErrNoData             Error = 0xF4
-	ErrDataNotWritten     Error = 0xF5
-	ErrCheckDataError     Error = 0xF6
-	ErrBufferTooSmall     Error = 0xF7
-	ErrNoSocketAvail      Error = 0xFF
+	ErrTimeoutChipReady  Error = 0x01
+	ErrTimeoutChipSelect Error = 0x02
+	ErrCheckStartCmd     Error = 0x03
+	ErrWaitRsp           Error = 0x04
+	ErrUnexpectedLength  Error = 0xE0
+	ErrNoParamsReturned  Error = 0xE1
+	ErrIncorrectSentinel Error = 0xE2
+	ErrIncorrectReply    Error = 0xE3
+	ErrCmdErrorReceived  Error = 0xEF
+	ErrNotImplemented    Error = 0xF0
+	ErrUnknownHost       Error = 0xF1
+	ErrSocketAlreadySet  Error = 0xF2
+	ErrConnectionTimeout Error = 0xF3
+	ErrNoData            Error = 0xF4
+	ErrDataNotWritten    Error = 0xF5
+	ErrCheckDataError    Error = 0xF6
+	ErrBufferTooSmall    Error = 0xF7
+	ErrNoSocketAvail     Error = 0xFF
 
 	NoSocketAvail uint8 = 0xFF
 )
@@ -726,7 +726,7 @@ func (d *Device) txcmd() error {
 	defer d.Transport.SetCS(true)
 
 	// wait until the chip is ready to accept our packet
-	if err := d._waitForSlaveSelect(); err != nil {
+	if err := d.waitForChipSelect(); err != nil {
 		return err
 	}
 
@@ -739,7 +739,7 @@ func (d *Device) txcmd() error {
 	d.Transport.SetCS(true)
 
 	// parse out the response packet
-	if err := d._waitForSlaveSelect(); err != nil {
+	if err := d.waitForChipSelect(); err != nil {
 		return err
 	}
 	if err := d.cmdbuf.ReadReply(d.Transport, cmd); err != nil {
@@ -749,16 +749,16 @@ func (d *Device) txcmd() error {
 	return nil
 }
 
-func (d *Device) _waitForSlaveSelect() (err error) {
+func (d *Device) waitForChipSelect() (err error) {
 	// the chip should have already been de-selected, so we'll wait until ready
 	if ok := d.Transport.GetACK(false, 10*time.Second); !ok {
-		return ErrTimeoutSlaveReady
+		return ErrTimeoutChipReady
 	}
 	// it is ready, so select the chip
 	d.Transport.SetCS(false)
 	// now that the chip is selected, wait until ACK is high to proceed
 	if ok := d.Transport.GetACK(true, 5*time.Millisecond); !ok {
-		return ErrTimeoutSlaveSelect
+		return ErrTimeoutChipSelect
 	}
 	return
 }

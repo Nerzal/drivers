@@ -27,8 +27,6 @@ type SPITransport struct {
 	RESET machine.Pin
 }
 
-var _ Transport = (*SPITransport)(nil)
-
 func (d *SPITransport) Configure() {
 	d.CS.Configure(machine.PinConfig{Mode: machine.PinOutput})
 	d.ACK.Configure(machine.PinConfig{Mode: machine.PinInput})
