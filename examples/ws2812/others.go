@@ -1,4 +1,4 @@
-// +build !digispark
+// +build !digispark,!arduino
 
 package main
 

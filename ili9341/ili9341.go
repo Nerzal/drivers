@@ -19,12 +19,16 @@ type Device struct {
 	rotation Rotation
 	driver   driver
 
+	x0, x1 int16 // cached address window; prevents useless/expensive
+	y0, y1 int16 // syscalls to PASET and CASET
+
 	dc  machine.Pin
 	cs  machine.Pin
 	rst machine.Pin
 	rd  machine.Pin
 }
 
+// Configure prepares display for use
 func (d *Device) Configure(config Config) {
 
 	if config.Width == 0 {
@@ -36,6 +40,10 @@ func (d *Device) Configure(config Config) {
 	d.width = config.Width
 	d.height = config.Height
 	d.rotation = config.Rotation
+
+	// try to pick an initial cache miss for one of the points
+	d.x0, d.x1 = -(d.width + 1), d.x0
+	d.y0, d.y1 = -(d.height + 1), d.y0
 
 	output := machine.PinConfig{machine.PinOutput}
 
@@ -138,6 +146,7 @@ func (d *Device) Display() error {
 	return nil
 }
 
+// DrawRGBBitmap copies an RGB bitmap to the internal buffer at given coordinates
 func (d *Device) DrawRGBBitmap(x, y int16, data []uint16, w, h int16) error {
 	k, i := d.Size()
 	if x < 0 || y < 0 || w <= 0 || h <= 0 ||
@@ -151,7 +160,7 @@ func (d *Device) DrawRGBBitmap(x, y int16, data []uint16, w, h int16) error {
 	return nil
 }
 
-// FillRectangle fills a rectangle at a given coordinates with a color
+// FillRectangle fills a rectangle at given coordinates with a color
 func (d *Device) FillRectangle(x, y, width, height int16, c color.RGBA) error {
 	k, i := d.Size()
 	if x < 0 || y < 0 || width <= 0 || height <= 0 ||
@@ -166,7 +175,7 @@ func (d *Device) FillRectangle(x, y, width, height int16, c color.RGBA) error {
 	return nil
 }
 
-// DrawRectangle fills a rectangle at a given coordinates with a color
+// DrawRectangle draws a rectangle at given coordinates with a color
 func (d *Device) DrawRectangle(x, y, w, h int16, c color.RGBA) error {
 	if err := d.DrawFastHLine(x, x+w-1, y, c); err != nil {
 		return err
@@ -208,6 +217,7 @@ func (d *Device) FillScreen(c color.RGBA) {
 	}
 }
 
+// GetRotation returns the current rotation of the device
 func (d *Device) GetRotation() Rotation {
 	return d.rotation
 }
@@ -229,7 +239,8 @@ func (d *Device) SetRotation(rotation Rotation) {
 	d.rotation = rotation
 }
 
-// SetScrollWindow sets an area to scroll with fixed top and bottom parts of the display
+// SetScrollArea sets an area to scroll with fixed top/bottom or left/right parts of the display
+// Rotation affects scroll direction
 func (d *Device) SetScrollArea(topFixedArea, bottomFixedArea int16) {
 	d.sendCommand(VSCRDEF, []uint8{
 		uint8(topFixedArea >> 8), uint8(topFixedArea),
@@ -244,7 +255,7 @@ func (d *Device) SetScroll(line int16) {
 	d.sendCommand(VSCRSADD, []uint8{uint8(line >> 8), uint8(line)})
 }
 
-// SpotScroll returns the display to its normal state
+// StopScroll returns the display to its normal state
 func (d *Device) StopScroll() {
 	d.sendCommand(NORON, nil)
 }
@@ -253,12 +264,20 @@ func (d *Device) StopScroll() {
 func (d *Device) setWindow(x, y, w, h int16) {
 	//x += d.columnOffset
 	//y += d.rowOffset
-	d.sendCommand(CASET, []uint8{
-		uint8(x >> 8), uint8(x), uint8((x + w - 1) >> 8), uint8(x + w - 1),
-	})
-	d.sendCommand(PASET, []uint8{
-		uint8(y >> 8), uint8(y), uint8((y + h - 1) >> 8), uint8(y + h - 1),
-	})
+	x1 := x + w - 1
+	if x != d.x0 || x1 != d.x1 {
+		d.sendCommand(CASET, []uint8{
+			uint8(x >> 8), uint8(x), uint8(x1 >> 8), uint8(x1),
+		})
+		d.x0, d.x1 = x, x1
+	}
+	y1 := y + h - 1
+	if y != d.y0 || y1 != d.y1 {
+		d.sendCommand(PASET, []uint8{
+			uint8(y >> 8), uint8(y), uint8(y1 >> 8), uint8(y1),
+		})
+		d.y0, d.y1 = y, y1
+	}
 	d.sendCommand(RAMWR, nil)
 }
 
@@ -281,15 +300,15 @@ func (d *Device) sendCommand(cmd byte, data []byte) {
 	d.dc.Low()
 	d.driver.write8(cmd)
 	d.dc.High()
-	for _, b := range data {
-		d.driver.write8(b)
-	}
+	d.driver.write8sl(data)
 	d.endWrite()
 }
 
 type driver interface {
 	configure(config *Config)
 	write8(b byte)
+	write8n(b byte, n int)
+	write8sl(b []byte)
 	write16(data uint16)
 	write16n(data uint16, n int)
 	write16sl(data []uint16)

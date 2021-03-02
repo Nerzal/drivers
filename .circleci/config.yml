@@ -6,13 +6,15 @@ jobs:
   build:
     docker:
       - image: tinygo/tinygo-dev
-    working_directory: /usr/local/go/src/vendor/tinygo.org/x/drivers
     steps:
       - checkout
       - run: tinygo version
       - run:
           name: "Enforce Go Formatted Code"
           command: make fmt-check
+      - run:
+          name: "Run unit tests"
+          command: make unit-test
       - run:
           name: "Run build and smoke tests"
           command: make smoke-test

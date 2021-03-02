@@ -133,6 +133,8 @@ func (dev *Device) Configure(config *DeviceConfig) (err error) {
 	time.Sleep(30 * time.Microsecond)
 
 	// Speed up to max device frequency
+	// I propose a check here for max frequency, but not put that functionality directly into the driver.
+	// Either that or we have to change the signature of the SPI interface in the machine package itself.
 	if dev.attrs.MaxClockSpeedMHz > 0 {
 		err := dev.trans.setClockSpeed(uint32(dev.attrs.MaxClockSpeedMHz) * 1e6)
 		if err != nil {

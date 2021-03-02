@@ -6,6 +6,8 @@ package apa102 // import "tinygo.org/x/drivers/apa102"
 import (
 	"image/color"
 	"machine"
+
+	"tinygo.org/x/drivers"
 )
 
 const (
@@ -23,27 +25,19 @@ var startFrame = []byte{0x00, 0x00, 0x00, 0x00}
 
 // Device wraps APA102 SPI LEDs.
 type Device struct {
-	bus   SPI
+	bus   drivers.SPI
 	Order int
 }
 
-// The SPI interface specifies the minimum functionality that a bus
-// implementation needs to provide for use by the APA102 driver.  Hardware
-// SPI from the TinyGo "machine" package implements this already.
-type SPI interface {
-	Tx(w, r []byte) error
-	Transfer(b byte) (byte, error)
-}
-
 // New returns a new APA102 driver. Pass in a fully configured SPI bus.
-func New(b SPI) Device {
+func New(b drivers.SPI) Device {
 	return Device{bus: b, Order: BGR}
 }
 
 // NewSoftwareSPI returns a new APA102 driver that will use a software based
 // implementation of the SPI protocol.
-func NewSoftwareSPI(sckPin, mosiPin machine.Pin, delay uint32) Device {
-	return New(&bbSPI{SCK: sckPin, MOSI: mosiPin, Delay: delay})
+func NewSoftwareSPI(sckPin, sdoPin machine.Pin, delay uint32) Device {
+	return New(&bbSPI{SCK: sckPin, SDO: sdoPin, Delay: delay})
 }
 
 // WriteColors writes the given RGBA color slice out using the APA102 protocol.
