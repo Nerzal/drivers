@@ -516,7 +516,11 @@ func (d *Device) SetPassphrase(ssid string, passphrase string) error {
 }
 
 func (d *Device) SetKey(ssid string, index uint8, key string) error {
-	return ErrNotImplemented
+	d.cmdbuf.StartCmd(CmdSetKey)
+	d.cmdbuf.AddString(ssid)
+	d.cmdbuf.AddByte(index)
+	d.cmdbuf.AddString(key)
+	return d.txcmd()
 }
 
 func (d *Device) SetNetworkForAP(ssid string) error {
@@ -527,16 +531,18 @@ func (d *Device) SetPassphraseForAP(ssid string, passphrase string) error {
 	return d.reqStr2(CmdSetAPPassphrase, ssid, passphrase)
 }
 
-func (d *Device) SetIP(which uint8, ip uint32, gw uint32, subnet uint32) error {
-	return ErrNotImplemented
-}
-
 func (d *Device) SetDNS(which uint8, dns1 uint32, dns2 uint32) error {
-	return ErrNotImplemented
+	d.cmdbuf.StartCmd(CmdSetDNSConfig)
+	d.cmdbuf.AddByte(which)
+	d.cmdbuf.AddUint32(dns1)
+	d.cmdbuf.AddUint32(dns2)
+	return d.txcmd()
 }
 
 func (d *Device) SetHostname(hostname string) error {
-	return ErrNotImplemented
+	d.cmdbuf.StartCmd(CmdSetDNSConfig)
+	d.cmdbuf.AddString(hostname)
+	return d.txcmd()
 }
 
 func (d *Device) SetPowerMode(mode uint8) error {
