@@ -35,7 +35,15 @@ var (
 	spi  = machine.NINA_SPI
 
 	// this is the ESP chip that has the WIFININA firmware flashed on it
-	adaptor *wifinina.Device
+	adaptor = wifinina.NewSPI(
+		spi,
+		machine.NINA_CS,
+		machine.NINA_ACK,
+		machine.NINA_GPIO0,
+		machine.NINA_RESETN,
+	)
+
+	console = machine.UART0
 )
 
 var buf = &bytes.Buffer{}
@@ -52,11 +60,6 @@ func main() {
 		SCK:       machine.NINA_SCK,
 	})
 
-	adaptor = wifinina.New(spi,
-		machine.NINA_CS,
-		machine.NINA_ACK,
-		machine.NINA_GPIO0,
-		machine.NINA_RESETN)
 	adaptor.Configure()
 
 	connectToAP()
@@ -65,7 +68,6 @@ func main() {
 		sendBatch()
 		time.Sleep(500 * time.Millisecond)
 	}
-	println("Done.")
 }
 
 func sendBatch() {

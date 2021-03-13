@@ -33,7 +33,15 @@ var (
 	spi  = machine.NINA_SPI
 
 	// this is the ESP chip that has the WIFININA firmware flashed on it
-	adaptor *wifinina.Device
+	adaptor = wifinina.NewSPI(
+		spi,
+		machine.NINA_CS,
+		machine.NINA_ACK,
+		machine.NINA_GPIO0,
+		machine.NINA_RESETN,
+	)
+
+	console = machine.UART0
 )
 
 var buf [256]byte
@@ -48,16 +56,11 @@ func main() {
 	// Configure SPI for 8Mhz, Mode 0, MSB First
 	spi.Configure(machine.SPIConfig{
 		Frequency: 8 * 1e6,
-		SDO:       machine.NINA_SDO,
-		SDI:       machine.NINA_SDI,
+		MOSI:      machine.NINA_MOSI,
+		MISO:      machine.NINA_MISO,
 		SCK:       machine.NINA_SCK,
 	})
 
-	adaptor = wifinina.New(spi,
-		machine.NINA_CS,
-		machine.NINA_ACK,
-		machine.NINA_GPIO0,
-		machine.NINA_RESETN)
 	adaptor.Configure()
 
 	connectToAP()

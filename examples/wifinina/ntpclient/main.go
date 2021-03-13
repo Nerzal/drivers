@@ -24,9 +24,20 @@ const ntpHost = "129.6.15.29"
 const NTP_PACKET_SIZE = 48
 
 var (
+
 	// this is the ESP chip that has the WIFININA firmware flashed on it
-	adaptor *wifinina.Device
-	b       = make([]byte, NTP_PACKET_SIZE)
+	// these are the default pins for the Arduino Nano33 IoT.
+	adaptor = wifinina.NewSPI(
+		machine.NINA_SPI,
+		machine.NINA_CS,
+		machine.NINA_ACK,
+		machine.NINA_GPIO0,
+		machine.NINA_RESETN,
+	)
+
+	b = make([]byte, NTP_PACKET_SIZE)
+
+	console = machine.UART0
 )
 
 func main() {
@@ -40,13 +51,6 @@ func main() {
 		SCK:       machine.NINA_SCK,
 	})
 
-	// these are the default pins for the Arduino Nano33 IoT.
-	adaptor = wifinina.New(machine.NINA_SPI,
-		machine.NINA_CS,
-		machine.NINA_ACK,
-		machine.NINA_GPIO0,
-		machine.NINA_RESETN)
-
 	adaptor.Configure()
 
 	// connect to access point
@@ -56,13 +60,7 @@ func main() {
 	ip := net.ParseIP(ntpHost)
 	raddr := &net.UDPAddr{IP: ip, Port: 123}
 	laddr := &net.UDPAddr{Port: 2390}
-	conn, err := net.DialUDP("udp", laddr, raddr)
-	if err != nil {
-		for {
-			time.Sleep(time.Second)
-			println(err)
-		}
-	}
+	conn, _ := net.DialUDP("udp", laddr, raddr)
 
 	for {
 		// send data

@@ -26,9 +26,9 @@ const ssid = ""
 const pass = ""
 
 // IP address of the MQTT broker to use. Replace with your own info.
-const server = "tcp://test.mosquitto.org:1883"
+// const server = "tcp://test.mosquitto.org:1883"
 
-//const server = "ssl://test.mosquitto.org:8883"
+const server = "ssl://test.mosquitto.org:8883"
 
 // these are the default pins for the Arduino Nano33 IoT.
 // change these to connect to a different UART or pins for the ESP8266/ESP32
@@ -41,7 +41,15 @@ var (
 	spi  = machine.NINA_SPI
 
 	// this is the ESP chip that has the WIFININA firmware flashed on it
-	adaptor *wifinina.Device
+	adaptor = wifinina.NewSPI(
+		spi,
+		machine.NINA_CS,
+		machine.NINA_ACK,
+		machine.NINA_GPIO0,
+		machine.NINA_RESETN,
+	)
+
+	console = machine.UART0
 	topic   = "tinygo"
 )
 
@@ -60,11 +68,6 @@ func main() {
 	})
 
 	// Init esp8266/esp32
-	adaptor = wifinina.New(spi,
-		machine.NINA_CS,
-		machine.NINA_ACK,
-		machine.NINA_GPIO0,
-		machine.NINA_RESETN)
 	adaptor.Configure()
 
 	connectToAP()
@@ -72,7 +75,7 @@ func main() {
 	opts := mqtt.NewClientOptions()
 	opts.AddBroker(server).SetClientID("tinygo-client-" + randomString(10))
 
-	println("Connectng to MQTT...")
+	println("Connectnig to MQTT...")
 	cl := mqtt.NewClient(opts)
 	if token := cl.Connect(); token.Wait() && token.Error() != nil {
 		failMessage(token.Error().Error())

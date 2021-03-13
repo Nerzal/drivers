@@ -19,11 +19,10 @@ func (d *Device) NewDriver() net.DeviceDriver {
 type Driver struct {
 	dev     *Device
 	sock    uint8
+	proto   uint8
+	ip      uint32
+	port    uint16
 	readBuf readBuffer
-
-	proto uint8
-	ip    uint32
-	port  uint16
 }
 
 type readBuffer struct {
@@ -34,7 +33,10 @@ type readBuffer struct {
 
 func (drv *Driver) GetDNS(domain string) (string, error) {
 	ipAddr, err := drv.dev.GetHostByName(domain)
-	return ipAddr.String(), err
+	if err != nil {
+		return "", err
+	}
+	return ipAddr.String(), nil
 }
 
 func (drv *Driver) ConnectTCPSocket(addr, portStr string) error {
@@ -47,14 +49,12 @@ func (drv *Driver) ConnectSSLSocket(addr, portStr string) error {
 
 func (drv *Driver) connectSocket(addr, portStr string, mode uint8) error {
 
-	drv.proto, drv.ip, drv.port = mode, 0, 0
-
 	// convert port to uint16
 	p64, err := strconv.ParseUint(portStr, 10, 16)
 	if err != nil {
 		return fmt.Errorf("could not convert port to uint16: %s", err.Error())
 	}
-	port := uint16(p64)
+	drv.port = uint16(p64)
 
 	// look up the hostname if necessary; if an IP address was specified, the
 	// same will be returned.  Otherwise, an IPv4 for the hostname is returned.
@@ -62,7 +62,7 @@ func (drv *Driver) connectSocket(addr, portStr string, mode uint8) error {
 	if err != nil {
 		return err
 	}
-	ip := ipAddr.AsUint32()
+	drv.ip = ipAddr.AsUint32()
 
 	// check to see if socket is already set; if so, stop it
 	if drv.sock != NoSocketAvail {
@@ -76,13 +76,23 @@ func (drv *Driver) connectSocket(addr, portStr string, mode uint8) error {
 		return err
 	}
 
-	// attempt to start the client
-	if err := drv.dev.StartClient(ip, port, drv.sock, mode); err != nil {
-		return err
+	if mode == ProtoModeUDP {
+		if err := drv.dev.StartServer(drv.port, drv.sock, mode); err != nil {
+			return err
+		}
 	}
 
+	// attempt to start the client
+	drv.proto = mode
+	if mode == ProtoModeUDP {
+		return nil
+	}
+
+	if err := drv.dev.StartClient(drv.ip, drv.port, drv.sock, drv.proto); err != nil {
+		return err
+	}
 	// FIXME: this 4 second timeout is simply mimicking the Arduino driver
-	for t := newTimer(4 * time.Second); !t.Expired(); {
+	for now := time.Now(); time.Since(now) < 4*time.Second; {
 		connected, err := drv.IsConnected()
 		if err != nil {
 			return err
@@ -94,6 +104,7 @@ func (drv *Driver) connectSocket(addr, portStr string, mode uint8) error {
 	}
 
 	return ErrConnectionTimeout
+
 }
 
 func convertPort(portStr string) (uint16, error) {
@@ -105,8 +116,6 @@ func convertPort(portStr string) (uint16, error) {
 }
 
 func (drv *Driver) ConnectUDPSocket(addr, portStr, lportStr string) (err error) {
-
-	drv.proto, drv.ip, drv.port = ProtoModeUDP, 0, 0
 
 	// convert remote port to uint16
 	if drv.port, err = convertPort(portStr); err != nil {
@@ -141,6 +150,7 @@ func (drv *Driver) ConnectUDPSocket(addr, portStr, lportStr string) (err error) 
 	}
 
 	// start listening for UDP packets on the local port
+	drv.proto = ProtoModeUDP
 	if err := drv.dev.StartServer(lport, drv.sock, drv.proto); err != nil {
 		return err
 	}
@@ -170,13 +180,13 @@ func (drv *Driver) Write(b []byte) (n int, err error) {
 	}
 	if drv.proto == ProtoModeUDP {
 		if err := drv.dev.StartClient(drv.ip, drv.port, drv.sock, drv.proto); err != nil {
-			return 0, fmt.Errorf("error in startClient: %w", err)
+			return 0, err
 		}
 		if _, err := drv.dev.InsertDataBuf(b, drv.sock); err != nil {
-			return 0, fmt.Errorf("error in insertDataBuf: %w", err)
+			return 0, err
 		}
 		if _, err := drv.dev.SendUDPData(drv.sock); err != nil {
-			return 0, fmt.Errorf("error in sendUDPData: %w", err)
+			return 0, err
 		}
 		return len(b), nil
 	} else {
@@ -192,14 +202,11 @@ func (drv *Driver) Write(b []byte) (n int, err error) {
 		}
 		return len(b), nil
 	}
-
-	return len(b), nil
 }
 
 func (drv *Driver) ReadSocket(b []byte) (n int, err error) {
 	avail, err := drv.available()
 	if err != nil {
-		println("ReadSocket error: " + err.Error())
 		return 0, err
 	}
 	if avail == 0 {
@@ -267,7 +274,7 @@ func (drv *Driver) stop() error {
 		return nil
 	}
 	drv.dev.StopClient(drv.sock)
-	for t := newTimer(5 * time.Second); !t.Expired(); {
+	for now := time.Now(); time.Since(now) < 5*time.Second; {
 		st, _ := drv.status()
 		if st == TCPStateClosed {
 			break
