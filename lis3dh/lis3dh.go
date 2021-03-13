@@ -2,9 +2,9 @@
 //
 // Datasheet: https://www.st.com/resource/en/datasheet/lis3dh.pdf
 //
-package lis3dh // import "tinygo.org/x/drivers/lis3dh"
+package lis3dh // import "github.com/Nerzal/drivers/lis3dh"
 
-import "tinygo.org/x/drivers"
+import "github.com/Nerzal/drivers"
 
 // Device wraps an I2C connection to a LIS3DH device.
 type Device struct {

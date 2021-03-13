@@ -5,7 +5,7 @@ package main
 import (
 	"machine"
 
-	"tinygo.org/x/drivers/mcp23017"
+	"github.com/Nerzal/drivers/mcp23017"
 )
 
 func main() {

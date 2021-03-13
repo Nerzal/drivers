@@ -6,7 +6,7 @@ import (
 
 	qt "github.com/frankban/quicktest"
 
-	"tinygo.org/x/drivers/tester"
+	"github.com/Nerzal/drivers/tester"
 )
 
 func TestGetPins(t *testing.T) {

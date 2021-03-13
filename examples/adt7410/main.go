@@ -5,7 +5,7 @@ import (
 	"machine"
 	"time"
 
-	"tinygo.org/x/drivers/adt7410"
+	"github.com/Nerzal/drivers/adt7410"
 )
 
 var (

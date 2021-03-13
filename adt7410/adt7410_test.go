@@ -3,8 +3,8 @@ package adt7410
 import (
 	"testing"
 
+	"github.com/Nerzal/drivers/tester"
 	qt "github.com/frankban/quicktest"
-	"tinygo.org/x/drivers/tester"
 )
 
 func TestDefaultI2CAddress(t *testing.T) {

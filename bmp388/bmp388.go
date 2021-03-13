@@ -3,7 +3,7 @@ package bmp388
 import (
 	"errors"
 
-	"tinygo.org/x/drivers"
+	"github.com/Nerzal/drivers"
 )
 
 var (

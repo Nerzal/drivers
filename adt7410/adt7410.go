@@ -2,12 +2,12 @@
 //
 // Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ADT7410.pdf
 //
-package adt7410 // import "tinygo.org/x/drivers/adt7410"
+package adt7410 // import "github.com/Nerzal/drivers/adt7410"
 
 import (
 	"time"
 
-	"tinygo.org/x/drivers"
+	"github.com/Nerzal/drivers"
 )
 
 type Error uint8

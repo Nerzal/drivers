@@ -3,9 +3,9 @@
 //
 // Datasheet: https://www.st.com/resource/en/datasheet/lsm6ds3.pdf
 //
-package lsm6ds3 // import "tinygo.org/x/drivers/lsm6ds3"
+package lsm6ds3 // import "github.com/Nerzal/drivers/lsm6ds3"
 
-import "tinygo.org/x/drivers"
+import "github.com/Nerzal/drivers"
 
 type AccelRange uint8
 type AccelSampleRate uint8

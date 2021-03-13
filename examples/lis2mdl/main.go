@@ -4,7 +4,7 @@ import (
 	"machine"
 	"time"
 
-	"tinygo.org/x/drivers/lis2mdl"
+	"github.com/Nerzal/drivers/lis2mdl"
 )
 
 func main() {

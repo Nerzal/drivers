@@ -17,8 +17,8 @@ import (
 	"math/rand"
 	"time"
 
-	"tinygo.org/x/drivers/net/mqtt"
-	"tinygo.org/x/drivers/wifinina"
+	"github.com/Nerzal/drivers/net/mqtt"
+	"github.com/Nerzal/drivers/wifinina"
 )
 
 // access point info

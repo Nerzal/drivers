@@ -1,9 +1,9 @@
 package main
 
 import (
+	"github.com/Nerzal/drivers/lsm303agr"
 	"machine"
 	"time"
-	"tinygo.org/x/drivers/lsm303agr"
 )
 
 func main() {

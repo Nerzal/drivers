@@ -5,7 +5,7 @@ import (
 	"machine"
 	"time"
 
-	"tinygo.org/x/drivers/ssd1306"
+	"github.com/Nerzal/drivers/ssd1306"
 )
 
 func main() {

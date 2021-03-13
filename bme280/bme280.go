@@ -9,7 +9,7 @@ package bme280
 import (
 	"math"
 
-	"tinygo.org/x/drivers"
+	"github.com/Nerzal/drivers"
 )
 
 // calibrationCoefficients reads at startup and stores the calibration coefficients

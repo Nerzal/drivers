@@ -5,9 +5,9 @@ import (
 	"machine"
 	"math"
 
-	"tinygo.org/x/drivers/ili9341"
-	"tinygo.org/x/drivers/touch"
-	"tinygo.org/x/drivers/touch/resistive"
+	"github.com/Nerzal/drivers/ili9341"
+	"github.com/Nerzal/drivers/touch"
+	"github.com/Nerzal/drivers/touch/resistive"
 )
 
 var (

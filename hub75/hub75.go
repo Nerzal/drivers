@@ -3,14 +3,14 @@
 // Guide: https://cdn-learn.adafruit.com/downloads/pdf/32x16-32x32-rgb-led-matrix.pdf
 // This driver was inspired by https://github.com/2dom/PxMatrix
 //
-package hub75 // import "tinygo.org/x/drivers/hub75"
+package hub75 // import "github.com/Nerzal/drivers/hub75"
 
 import (
 	"image/color"
 	"machine"
 	"time"
 
-	"tinygo.org/x/drivers"
+	"github.com/Nerzal/drivers"
 )
 
 type Config struct {

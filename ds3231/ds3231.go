@@ -2,12 +2,12 @@
 //
 // Datasheet:
 // https://datasheets.maximintegrated.com/en/ds/DS3231.pdf
-package ds3231 // import "tinygo.org/x/drivers/ds3231"
+package ds3231 // import "github.com/Nerzal/drivers/ds3231"
 
 import (
 	"time"
 
-	"tinygo.org/x/drivers"
+	"github.com/Nerzal/drivers"
 )
 
 type Mode uint8

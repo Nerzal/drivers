@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/Nerzal/drivers/bmi160"
 	"machine"
 	"time"
-	"tinygo.org/x/drivers/bmi160"
 )
 
 func main() {

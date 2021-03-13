@@ -6,8 +6,8 @@ import (
 	"machine"
 	"time"
 
-	"tinygo.org/x/drivers/examples/ili9341/pyportal_boing/graphics"
-	"tinygo.org/x/drivers/ili9341"
+	"github.com/Nerzal/drivers/examples/ili9341/pyportal_boing/graphics"
+	"github.com/Nerzal/drivers/ili9341"
 )
 
 const (

@@ -13,8 +13,8 @@ import (
 	"machine"
 	"time"
 
-	"tinygo.org/x/drivers/net"
-	"tinygo.org/x/drivers/wifinina"
+	"github.com/Nerzal/drivers/net"
+	"github.com/Nerzal/drivers/wifinina"
 )
 
 // access point info

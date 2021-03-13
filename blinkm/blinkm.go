@@ -2,9 +2,9 @@
 //
 // Datasheet: http://thingm.com/fileadmin/thingm/downloads/BlinkM_datasheet.pdf
 //
-package blinkm // import "tinygo.org/x/drivers/blinkm"
+package blinkm // import "github.com/Nerzal/drivers/blinkm"
 
-import "tinygo.org/x/drivers"
+import "github.com/Nerzal/drivers"
 
 // Device wraps an I2C connection to a BlinkM device.
 type Device struct {

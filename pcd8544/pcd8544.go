@@ -2,7 +2,7 @@
 //
 // Datasheet: http://eia.udg.edu/~forest/PCD8544_1.pdf
 //
-package pcd8544 // import "tinygo.org/x/drivers/pcd8544"
+package pcd8544 // import "github.com/Nerzal/drivers/pcd8544"
 
 import (
 	"errors"
@@ -10,7 +10,7 @@ import (
 	"machine"
 	"time"
 
-	"tinygo.org/x/drivers"
+	"github.com/Nerzal/drivers"
 )
 
 // Device wraps an SPI connection.

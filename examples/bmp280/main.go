@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/Nerzal/drivers/bmp280"
 	"machine"
 	"time"
-	"tinygo.org/x/drivers/bmp280"
 )
 
 func main() {

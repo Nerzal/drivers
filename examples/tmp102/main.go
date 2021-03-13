@@ -5,7 +5,7 @@ import (
 	"machine"
 	"time"
 
-	"tinygo.org/x/drivers/tmp102"
+	"github.com/Nerzal/drivers/tmp102"
 )
 
 func main() {

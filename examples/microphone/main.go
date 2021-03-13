@@ -8,7 +8,7 @@ package main
 import (
 	"machine"
 
-	"tinygo.org/x/drivers/microphone"
+	"github.com/Nerzal/drivers/microphone"
 )
 
 const (

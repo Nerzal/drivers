@@ -4,7 +4,7 @@ import (
 	"machine"
 	"time"
 
-	"tinygo.org/x/drivers/hcsr04"
+	"github.com/Nerzal/drivers/hcsr04"
 )
 
 func main() {

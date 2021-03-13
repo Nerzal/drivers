@@ -4,7 +4,7 @@ import (
 	"machine"
 	"time"
 
-	"tinygo.org/x/drivers/easystepper"
+	"github.com/Nerzal/drivers/easystepper"
 )
 
 func main() {

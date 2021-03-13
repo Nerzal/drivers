@@ -1,6 +1,6 @@
 # TinyGo Drivers
 
-[![PkgGoDev](https://pkg.go.dev/badge/tinygo.org/x/drivers)](https://pkg.go.dev/tinygo.org/x/drivers) [![CircleCI](https://circleci.com/gh/tinygo-org/drivers/tree/dev.svg?style=svg)](https://circleci.com/gh/tinygo-org/drivers/tree/dev)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/Nerzal/drivers)](https://pkg.go.dev/github.com/Nerzal/drivers) [![CircleCI](https://circleci.com/gh/tinygo-org/drivers/tree/dev.svg?style=svg)](https://circleci.com/gh/tinygo-org/drivers/tree/dev)
 
 
 This package provides a collection of hardware drivers for devices that can be used together with [TinyGo](https://tinygo.org).
@@ -8,7 +8,7 @@ This package provides a collection of hardware drivers for devices that can be u
 ## Installing
 
 ```shell
-go get tinygo.org/x/drivers
+go get github.com/Nerzal/drivers
 ```
 
 ## How to use
@@ -23,7 +23,7 @@ import (
 
     "machine"
 
-    "tinygo.org/x/drivers/bmp180"
+    "github.com/Nerzal/drivers/bmp180"
 )
 
 func main() {

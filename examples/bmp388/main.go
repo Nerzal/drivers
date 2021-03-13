@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"tinygo.org/x/drivers/bmp388"
+	"github.com/Nerzal/drivers/bmp388"
 )
 
 func main() {

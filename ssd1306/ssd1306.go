@@ -2,7 +2,7 @@
 //
 // Datasheet: https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf
 //
-package ssd1306 // import "tinygo.org/x/drivers/ssd1306"
+package ssd1306 // import "github.com/Nerzal/drivers/ssd1306"
 
 import (
 	"errors"
@@ -10,7 +10,7 @@ import (
 	"machine"
 	"time"
 
-	"tinygo.org/x/drivers"
+	"github.com/Nerzal/drivers"
 )
 
 // Device wraps an SPI connection.

@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Nerzal/drivers/net"
+	"github.com/Nerzal/drivers/net/tls"
 	"github.com/eclipse/paho.mqtt.golang/packets"
-	"tinygo.org/x/drivers/net"
-	"tinygo.org/x/drivers/net/tls"
 )
 
 // NewClient will create an MQTT v3.1.1 client with all of the options specified

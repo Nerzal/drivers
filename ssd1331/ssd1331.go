@@ -2,7 +2,7 @@
 //
 // Datasheet: https://www.crystalfontz.com/controllers/SolomonSystech/SSD1331/381/
 //
-package ssd1331 // import "tinygo.org/x/drivers/ssd1331"
+package ssd1331 // import "github.com/Nerzal/drivers/ssd1331"
 
 import (
 	"image/color"
@@ -11,7 +11,7 @@ import (
 	"errors"
 	"time"
 
-	"tinygo.org/x/drivers"
+	"github.com/Nerzal/drivers"
 )
 
 type Model uint8

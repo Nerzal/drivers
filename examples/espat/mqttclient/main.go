@@ -16,8 +16,8 @@ import (
 	"math/rand"
 	"time"
 
-	"tinygo.org/x/drivers/espat"
-	"tinygo.org/x/drivers/net/mqtt"
+	"github.com/Nerzal/drivers/espat"
+	"github.com/Nerzal/drivers/net/mqtt"
 )
 
 // access point info

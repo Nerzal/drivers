@@ -2,7 +2,7 @@
 //
 // Datasheet: https://www.waveshare.com/w/upload/d/d3/2.13inch-e-paper-b-Specification.pdf
 //
-package epd2in13x // import "tinygo.org/x/drivers/waveshare-epd/epd2in13x"
+package epd2in13x // import "github.com/Nerzal/drivers/waveshare-epd/epd2in13x"
 
 import (
 	"errors"
@@ -10,7 +10,7 @@ import (
 	"machine"
 	"time"
 
-	"tinygo.org/x/drivers"
+	"github.com/Nerzal/drivers"
 )
 
 type Config struct {

@@ -3,13 +3,13 @@
 // Datasheet:
 // https://datasheets.maximintegrated.com/en/ds/DS1307.pdf
 //
-package ds1307 // import "tinygo.org/x/drivers/ds1307"
+package ds1307 // import "github.com/Nerzal/drivers/ds1307"
 
 import (
 	"errors"
 	"time"
 
-	"tinygo.org/x/drivers"
+	"github.com/Nerzal/drivers"
 )
 
 // Device wraps an I2C connection to a DS1307 device.

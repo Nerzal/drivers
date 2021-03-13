@@ -3,13 +3,13 @@
 //
 // Datasheet: https://www.st.com/resource/en/datasheet/lis2mdl.pdf
 //
-package lis2mdl // import "tinygo.org/x/drivers/lis2mdl"
+package lis2mdl // import "github.com/Nerzal/drivers/lis2mdl"
 
 import (
 	"math"
 	"time"
 
-	"tinygo.org/x/drivers"
+	"github.com/Nerzal/drivers"
 )
 
 // Device wraps an I2C connection to a LIS2MDL device.

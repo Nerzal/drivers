@@ -6,8 +6,8 @@ import (
 	"machine"
 	"math"
 
-	"tinygo.org/x/drivers/touch"
-	"tinygo.org/x/drivers/touch/resistive"
+	"github.com/Nerzal/drivers/touch"
+	"github.com/Nerzal/drivers/touch/resistive"
 )
 
 var (
