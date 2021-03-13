@@ -1,4 +1,4 @@
-package dht // import "tinygo.org/x/drivers/dht"
+package dht // import "github.com/Nerzal/drivers/dht"
 
 import (
 	"machine"
