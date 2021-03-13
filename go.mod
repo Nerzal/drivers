@@ -1,4 +1,4 @@
-module tinygo.org/x/drivers
+module github.com/Nerzal/drivers
 
 go 1.15
 
